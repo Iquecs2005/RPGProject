@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 9202016709959085354}
   - component: {fileID: 6720722357422638939}
   - component: {fileID: 1356383957588598728}
-  - component: {fileID: 1787824627621606491}
+  - component: {fileID: 5071731324434589149}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -106,7 +106,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1787824627621606491
+--- !u!114 &5071731324434589149
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -115,6 +115,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 6299093793532307226}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8813a73b5a2d75c41ba9d33da7b62861, type: 3}
+  m_Script: {fileID: 11500000, guid: 2f4a4bcd629c4be41984b4b9e8fd086e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHealth: 51
+  meleeAttackDamage: 20
