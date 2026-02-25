@@ -41,6 +41,6 @@ public class BattleActionsUI : MonoBehaviour
         if (currentFighter == null)
             return;
 
-        currentFighter.MeleeAttack(BattleController.instance.GetEnemy());
+        currentFighter.MeleeAttack(BattleController.instance.GetEnemy()[0]);
     }
 }

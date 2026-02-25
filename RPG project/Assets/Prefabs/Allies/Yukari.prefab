@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2142409417922697970}
   - component: {fileID: -8558054253463238831}
   m_Layer: 0
-  m_Name: Makoto
+  m_Name: Yukari
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -63,7 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: eac7da2412a52e441af51076c69c1092, type: 2}
+  - {fileID: 2100000, guid: e31e3f34a362c174aab75431a83ab84f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -120,5 +120,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 980dd7577b437e94aa242b3b18873e89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  meleeAttackDamage: 50
+  data: {fileID: 11400000, guid: 5226c25033178a4408b2bed2c7646eb3, type: 2}

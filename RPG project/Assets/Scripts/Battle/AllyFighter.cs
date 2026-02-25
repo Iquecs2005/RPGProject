@@ -4,9 +4,16 @@ using UnityEngine;
 
 public class AllyFighter : BattleFighter
 {
-    private void Start()
+    [SerializeField] private PartyMemberData data;
+
+    private void OnEnable()
     {
-        currentHealth = maxHealth;
+        data.OnDeathEvent.AddListener(OnDeathWrapper);
+    }
+
+    private void OnDisable()
+    {
+        
     }
 
     public override void OnTurnStart()
@@ -19,5 +26,21 @@ public class AllyFighter : BattleFighter
         BattleActionsUI.instance.DeactivateUI();
 
         base.OnTurnEnd();
+    }
+
+    public override void ReceiveDamage(int damage)
+    {
+        data.TakeDamage(damage);
+    }
+
+    public override void MeleeAttack(BattleFighter target) 
+    {
+        target.ReceiveDamage(data.meleeDamage);
+        OnTurnEnd();
+    }
+
+    private void OnDeathWrapper(PartyMemberData data) 
+    {
+        OnDeath();
     }
 }

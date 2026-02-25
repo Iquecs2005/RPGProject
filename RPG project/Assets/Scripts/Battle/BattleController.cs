@@ -8,21 +8,14 @@ public class BattleController : MonoBehaviour
 
     private BattleState currentState;
 
-    [SerializeField] private int maxPlayerHealth;
-    private int playerHealth;
-    [SerializeField] private int maxEnemyHealth;
-    private int enemyHealth;
-
-    [SerializeField] private GameObject allyPrefab;
-    [SerializeField] private GameObject enemyPrefab;
-    GameObject allyGO;
-    GameObject enemyGO;
+    [SerializeField] private GameObject[] enemiesPrefab;
 
     [SerializeField] private Transform[] alliesPositions;
     [SerializeField] private Transform[] enemiesPositions;
 
-    private BattleFighter allyBattleFighters;
-    private BattleFighter enemyBattleFighters;
+    private List<BattleFighter> allyBattleFighters = new List<BattleFighter>();
+    private List<BattleFighter> enemyBattleFighters = new List<BattleFighter>();
+    private List<BattleFighter> turnOrder = new List<BattleFighter>();
 
     private BattleFighter currentTurnBF;
 
@@ -44,41 +37,47 @@ public class BattleController : MonoBehaviour
 
     private void Start()
     {
-        allyGO = Instantiate(allyPrefab, alliesPositions[0].position, alliesPositions[0].rotation);
-        enemyGO = Instantiate(enemyPrefab, enemiesPositions[0].position, enemiesPositions[0].rotation);
-
-        allyBattleFighters = allyGO.GetComponent<BattleFighter>();
-        enemyBattleFighters = enemyGO.GetComponent<BattleFighter>();
-
-        playerHealth = maxPlayerHealth;
-        enemyHealth = maxEnemyHealth;
-
-        StartUnitTurn(allyBattleFighters);
+        InstantiateFighters();
+        StartNextTurn();
     }
 
-    //private void StartPlayerTurn() 
-    //{
-    //    currentState = BattleState.PlayerTurn;
-    //    currentTurnBF = allyBattleFighters;
-    //    allyBattleFighters.OnTurnStart();
-    //}
+    private void InstantiateFighters() 
+    {
+        List<PartyMemberData> partyMembers = PartyManager.GetPartyMembersData();
 
-    //private void EndPlayerTurn()
-    //{
-    //    StartEnemyTurn();
-    //}
+        for (int i = 0; i < partyMembers.Count; i++)
+        {
+            GameObject allyPrefab = partyMembers[i].battlePrefab;
+            GameObject newAlly = Instantiate(allyPrefab, alliesPositions[i].position, alliesPositions[i].rotation);
+            allyBattleFighters.Add(newAlly.GetComponent<BattleFighter>());
+        }
 
-    //private void StartEnemyTurn()
-    //{
-    //    currentState = BattleState.EnemyTurn;
-    //    currentTurnBF = enemyBattleFighters;
-    //    enemyBattleFighters.OnTurnStart();
-    //}
+        for (int i = 0; i < enemiesPrefab.Length; i++)
+        {
+            GameObject enemyPrefab = enemiesPrefab[i];
+            GameObject newEnemy = Instantiate(enemyPrefab, enemiesPositions[i].position, enemiesPositions[i].rotation);
+            enemyBattleFighters.Add(newEnemy.GetComponent<BattleFighter>());
+        }
+    }
 
-    //private void EndEnemyTurn()
-    //{
-    //    StartPlayerTurn();
-    //}
+    private void StartNextTurn() 
+    {
+        if (currentState == BattleState.Win || currentState == BattleState.Lost)
+        {
+            return;
+        }
+
+        if (turnOrder.Count == 0) 
+        {
+            turnOrder.AddRange(allyBattleFighters);
+            turnOrder.AddRange(enemyBattleFighters);
+        }
+
+        BattleFighter turnFighter = turnOrder[0];
+        turnOrder.RemoveAt(0);
+
+        StartUnitTurn(turnFighter);
+    }
 
     private void StartUnitTurn(BattleFighter battleFighter) 
     {
@@ -91,71 +90,78 @@ public class BattleController : MonoBehaviour
         if (currentTurnBF != battleFighter)
             return;
 
-        if (allyBattleFighters == battleFighter) 
-        {
-            StartUnitTurn(enemyBattleFighters);
-        }
-        else if (enemyBattleFighters == battleFighter)
-        {
-            StartUnitTurn(allyBattleFighters);
-        }
+        StartNextTurn();
     }
 
-    public void Attack(bool player, bool targetPlayer, int damage) 
-    {
-        //switch (currentState) 
-        //{
-        //    case BattleState.PlayerTurn:
-        //        if (!player)
-        //            return;
-        //        break;
-        //    case BattleState.EnemyTurn:
-        //        if (player)
-        //            return;
-        //        break;
-        //    default:
-        //        return;
-        //}
+    //public void Attack(bool player, bool targetPlayer, int damage) 
+    //{
+    //    //switch (currentState) 
+    //    //{
+    //    //    case BattleState.PlayerTurn:
+    //    //        if (!player)
+    //    //            return;
+    //    //        break;
+    //    //    case BattleState.EnemyTurn:
+    //    //        if (player)
+    //    //            return;
+    //    //        break;
+    //    //    default:
+    //    //        return;
+    //    //}
 
-        //if (targetPlayer)
-        //{
-        //    playerHealth -= damage;
-        //    if (playerHealth <= 0)
-        //    {
-        //        Destroy(allyGO);
-        //        EndBattle();
-        //        return;
-        //    }
-        //    EndEnemyTurn();
-        //}
-        //else
-        //{
-        //    enemyHealth -= damage;
-        //    if (enemyHealth <= 0)
-        //    {
-        //        Destroy(enemyGO);
-        //        EndBattle();
-        //        return;
-        //    }
-        //    EndPlayerTurn();
-        //}
-    } 
+    //    //if (targetPlayer)
+    //    //{
+    //    //    playerHealth -= damage;
+    //    //    if (playerHealth <= 0)
+    //    //    {
+    //    //        Destroy(allyGO);
+    //    //        EndBattle();
+    //    //        return;
+    //    //    }
+    //    //    EndEnemyTurn();
+    //    //}
+    //    //else
+    //    //{
+    //    //    enemyHealth -= damage;
+    //    //    if (enemyHealth <= 0)
+    //    //    {
+    //    //        Destroy(enemyGO);
+    //    //        EndBattle();
+    //    //        return;
+    //    //    }
+    //    //    EndPlayerTurn();
+    //    //}
+    //} 
 
     public void OnUnitDeath(BattleFighter battleFighter) 
     {
-        if (battleFighter == allyBattleFighters)
+        turnOrder.Remove(battleFighter);
+
+        if (allyBattleFighters.Remove(battleFighter)) 
         {
-            print("Battle Lost");
-            currentState = BattleState.Lost;
+            if (allyBattleFighters.Count == 0)
+            {
+                print("Battle Lost");
+                currentState = BattleState.Lost;
+            }
         }
-        else if (battleFighter == enemyBattleFighters)
+        else if (enemyBattleFighters.Remove(battleFighter))
         {
-            print("Battle Won");
-            currentState = BattleState.Win;
+            if (enemyBattleFighters.Count == 0) 
+            {
+                print("Battle Won");
+                currentState = BattleState.Win;
+            }
         }
     }
 
-    //public void EndBattle() 
+    public void OnMCDeath() 
+    {
+        print("Battle Lost");
+        currentState = BattleState.Lost;
+    }
+
+    //public void EndBattle()
     //{
     //    if (playerHealth <= 0)
     //    {
@@ -169,12 +175,12 @@ public class BattleController : MonoBehaviour
     //    }
     //}
 
-    public BattleFighter GetPlayer() 
+    public List<BattleFighter> GetPlayer() 
     {
         return allyBattleFighters;
     }
 
-    public BattleFighter GetEnemy()
+    public List<BattleFighter> GetEnemy()
     {
         return enemyBattleFighters;
     }
